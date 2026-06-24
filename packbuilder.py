@@ -95,7 +95,7 @@ MODEL_TEMPLATE = {
                 {
                     "name": "leftLeg",
                     "parent": "waist",
-                    "pivot": 1.9,
+                    "pivot": [1.9, 12, 0],
                     "cubes": [
                         {"origin": [-0.1, 0, -2], "size": [4, 12, 4], "uv": [16, 48]}
                     ]
@@ -798,7 +798,7 @@ def generate_packs(skins_folder, output_name):
         json.dump(["en_US"], f, indent=2)
 
     script_content = JS_TEMPLATE.replace("__TOTAL_SKINS__", str(num_skins))
-    with open(os.path.join(bp_dir, "scripts", "main.js"), "w") as f:
+    with open(os.path.join(bp_dir, "scripts", "main.js"), "w", encoding="utf-8") as f:
         f.write(script_content)
 
     print_progress(6, "Packing Behavior and Resource packs into .mcaddon...")

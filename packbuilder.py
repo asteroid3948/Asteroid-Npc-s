@@ -182,7 +182,8 @@ function runAction(player, action) {
         cmd = cmd.trim();
         if (cmd.startsWith("/")) cmd = cmd.substring(1);
         if (cmd.length > 0) {
-            system.runCommandAsync(`execute as "${player.name}" at @s run ${cmd}`).catch(() => {});
+            let processedCmd = cmd.replace(/@s/g, `"${player.name}"`).replace(/@p/g, `"${player.name}"`);
+            system.runCommandAsync(processedCmd).catch(() => {});
         }
     }
 }

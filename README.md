@@ -1,61 +1,64 @@
-# Asteroid NPCs
+# Minecraft Bedrock Custom NPC Add-on & Generator
 
-Asteroid NPCs is a Minecraft Bedrock edition add-on that provides creators with tools to spawn and customize stationary, invulnerable humanoid NPCs. The system supports custom action bindings for interactions and punches, dynamic player-tracking rotation, and offset floating text holograms.
+A dynamic, script-powered Minecraft Bedrock Add-on system that allows you to create, edit, and program custom NPCs in-game. It includes a command-line utility (`packbuilder.py`) to automatically build and package a custom `.mcaddon` with any folder of skins you provide.
 
-## Technical Overview
+## Features
 
-The add-on is split into a Behavior Pack (BP) and a Resource Pack (RP). Scripting is handled via the Bedrock Script API (`@minecraft/server` and `@minecraft/server-ui`).
-
-### Entity Architecture
-
-* **asteroid:custom_npc**: The main NPC entity. 
-  * It has physics enabled with collision, but gravity and pushability components are configured to prevent movement.
-  * Damage sensors are set to negate all incoming damage causes, preventing the NPC from taking damage or reacting to hits visually, while still firing hit events in the script.
-  * Features custom animations mapping to the humanoid model (specifically flared arm idle configurations).
-* **asteroid:floating_text**: An invisible dummy entity used to render name tags at exact offsets above the NPC's head. Spawning holograms on a separate entity avoids rendering issues and allows stacking multiple lines cleanly.
-
-### Configuration Storage
-
-NPC configurations are stored directly on the entity instances using dynamic properties:
-* `hologram_l1` (string): Text for the first line of the hologram.
-* `hologram_l2` (string): Text for the second line of the hologram.
-* `hologram_combined` (boolean): Flag determining if the lines are merged on a single entity using a newline escape (`\n`) or split across two separate entities at stacked offsets.
-* `behavior_type` (integer): `0` for fixed facing angle, `1` for active player tracking.
-* `lock_straight` (boolean): Flag determining if the NPC rotation should snap to the nearest cardinal direction (North, East, South, West).
-* `interact_action` (string): Command line string executed when a player interacts with the NPC.
-* `punch_action` (string): Command line string executed when a player punches the NPC.
+### In-Game Add-on Features
+*   **Custom Geometry & Animation**: Features flared arms humanoid geometry and idle animations.
+*   **§gNPC Creator**: Use this tool on any block to spawn a custom NPC.
+*   **§gNPC Editor**: Interact with any spawned NPC with this tool to customize it on the fly.
+*   **§gSet NPC Rotation**: Interact with an NPC with this tool to set its rotation. SNAPs to the closest cardinal direction (North, East, South, West) if locked direction is enabled.
+*   **Dual-Line Holograms**: Floating text above the NPC's head with support for 2 separate lines or combined multiline text using a custom, invulnerable floating text entity (`asteroid:floating_text`).
+*   **Interactive Behaviors**: 
+    *   **Fixed**: NPC stands facing a set direction (snapped or manual).
+    *   **Look at Player**: NPC dynamically rotates to track the closest player within a 10-block radius.
+*   **Custom Event Triggers (Commands)**:
+    *   **Interact Action**: Executes one or more commands (semicolon-separated) when a player right-clicks/interacts with the NPC.
+    *   **Punch Action**: Executes one or more commands (semicolon-separated) when a player punches/attacks the NPC.
+    *   *Note: Commands are executed via scripting API under the interacting player's permissions.*
 
 ---
 
-## Creator Tools
-
-The add-on adds three items to the equipment category in a custom creative tab:
-
-* **NPC Creator (asteroid:npc_creator)**: Right-clicking with this item triggers a block raycast up to 10 blocks away. It spawns the NPC centered on the targeted block and opens the configuration GUI.
-* **NPC Editor (asteroid:npc_editor)**: Right-clicking an NPC with this item reads its stored dynamic properties and opens the configuration GUI pre-populated with those values.
-* **Set NPC Rotation (asteroid:npc_rotator)**: Right-clicking an NPC configured in "Fixed" mode with this item calculates the horizontal angle between the NPC and the player's standing coordinates, rotating the NPC to face the player. If "Lock Facing Straight" is enabled on the NPC, it snaps the rotation to the nearest cardinal direction (North, East, South, West) relative to where the player is standing. Note: when using the rotation wand, you might need to click the NPC a few times for it to fully rotate due to client sync.
+## Add-on Installation Guide
+1. Download or generate the `Asteroid_NPCs.mcaddon` file.
+2. Double-click the `.mcaddon` file to automatically import both the Resource Pack and Behavior Pack into Minecraft Bedrock Edition.
+3. Apply both the **Asteroid Npc's BP** and **Asteroid Npc's RP** to your Minecraft world.
+4. **IMPORTANT**: Make sure to enable **Beta APIs** under the Experiments tab in your world settings, as this addon relies on script events.
 
 ---
 
-## Configuration Guide
+## In-Game Guide
 
-When using the Creator or Editor tools, a form will open with the following options:
+### Spawning an NPC
+1. Get the **§gNPC Creator** item from the Creative Inventory (Equipment category) or run `/give @s asteroid:npc_creator`.
+2. Use/right-click on a block to open the NPC Creator UI.
+3. Configure your NPC (holograms, skins, behaviors) and submit.
 
-### Combined Lines
-* **Enabled**: Merges Hologram Line 1 and Hologram Line 2 into a single `asteroid:floating_text` entity at a height offset of `y + 1.85`, separated by a newline (`\n`).
-* **Disabled**: Spawns two distinct `asteroid:floating_text` entities. Line 1 is positioned at `y + 2.2` and Line 2 is positioned at `y + 1.8`, creating a stacked appearance.
+### Editing an NPC
+1. Get the **§gNPC Editor** item from the Creative Inventory or run `/give @s asteroid:npc_editor`.
+2. Right-click/interact with an existing NPC to reopen the customization form.
 
-### NPC Behavior
-* **Fixed**: The NPC maintains a static rotation. You can lock this rotation to cardinal directions during placement or modify it using the Set NPC Rotation tool.
-* **Look at player**: Activates an interval loop running every 2 ticks (10 times per second) that scans for the closest player within 10 blocks of the NPC and updates the NPC's rotation vector to look at them.
+### Rotating & Snapping NPCs
+1. Get the **§gSet NPC Rotation** wand from the Creative Inventory or run `/give @s asteroid:npc_rotator`.
+2. Stand in the direction you want the NPC to face.
+3. Right-click/interact with the NPC using the wand.
+    *   If **Lock facing straight** is toggled **Off**, the NPC will face directly away from you (facing the same direction you are).
+    *   If **Lock facing straight** is toggled **On**, the NPC will automatically snap to the nearest cardinal direction (North, East, South, or West) relative to where you are standing.
+    *   *Note: When using the rotation wand, you may need to click the NPC a few times for it to fully register the rotation.*
 
-### Lock Facing Straight
-* **Enabled**: Snaps the NPC's facing direction to the nearest cardinal quadrant (North, East, South, or West) based on where the player is standing relative to the NPC.
+---
 
-### Skin Variant
-* Selects the texture index (1 through 80) to apply to the NPC model.
+## Using the Addon Generator (`packbuilder.py`)
 
-### Interact / Punch Actions
-* Accepts standard Minecraft commands (excluding the leading `/` slash). 
-* Multiple commands can be chained together using a semicolon (`;`) separator (e.g., `give @s diamond; say Thanks for trading!`).
-* Commands are executed through the script engine using `system.runCommandAsync` with the executor context set to the interacting player, allowing commands to run successfully even if the player does not have operator permissions.
+If you want to create a custom addon using your own set of skin textures, you can use the command-line utility. The utility takes a folder of `.png` skins, indexes them, decodes the default pack icon on the fly, and packages everything into a ready-to-import `.mcaddon` file.
+
+### Prerequisites
+*   Python 3.x installed on your computer.
+
+### Running the Builder
+
+#### 1. Interactive Mode (Recommended)
+Simply run the script with no arguments:
+```bash
+python packbuilder.py

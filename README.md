@@ -16,7 +16,7 @@ A dynamic, script-powered Minecraft Bedrock Add-on system that allows you to cre
 *   **Custom Event Triggers (Commands)**:
     *   **Interact Action**: Executes one or more commands (semicolon-separated) when a player right-clicks/interacts with the NPC.
     *   **Punch Action**: Executes one or more commands (semicolon-separated) when a player punches/attacks the NPC.
-    *   *Note: Commands are executed via scripting API under the interacting player's permissions.*
+    *   *Note: Commands are executed via scripting API under server console privileges. This allows **non-OP players** to trigger commands like `/gamemode`, `/give`, or `/tp` through the NPC. The script automatically replaces `@s` and `@p` with the interacting player's name.*
 
 ---
 
@@ -83,7 +83,9 @@ python packbuilder.py "C:\Path\To\Skins" --output "MyCustomNpcs"
 *   **Scripting Entry**: `scripts/main.js` using `@minecraft/server` and `@minecraft/server-ui`.
 *   **Properties**: Syncs texture indexes through `asteroid:skin_variant` and behavior toggles through `asteroid:look_at_player`.
 *   **Floating Texts**: Relies on dynamic property mappings linked via tag identifiers `npc_id_${npc.id}` on invulnerable custom entities.
-*   **Commands**: Ran asynchronously via `system.runCommandAsync` executing `execute as "PlayerName" at @s run <command>`.
+*   **Commands**: Ran directly as server console using `system.runCommandAsync` with regex replacement on target selectors:
+    *   `@s` -> `"PlayerName"`
+    *   `@p` -> `"PlayerName"`
 
 ---
 

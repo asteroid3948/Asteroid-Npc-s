@@ -8,7 +8,7 @@ A dynamic, script-powered Minecraft Bedrock Add-on system that allows you to cre
 *   **Custom Geometry & Animation**: Features flared arms humanoid geometry and idle animations.
 *   **§gNPC Creator**: Use this tool on any block to spawn a custom NPC.
 *   **§gNPC Editor**: Interact with any spawned NPC with this tool to customize it on the fly.
-*   **§gSet NPC Rotation**: Interact with an NPC with this tool to set its rotation. SNAPs to the closest cardinal direction (North, East, South, West) if locked direction is enabled.
+*   **§gSet NPC Rotation**: Interact with an NPC with this tool to set its rotation. Snaps to the closest cardinal direction (North, East, South, West) if locked direction is enabled.
 *   **Dual-Line Holograms**: Floating text above the NPC's head with support for 2 separate lines or combined multiline text using a custom, invulnerable floating text entity (`asteroid:floating_text`).
 *   **Interactive Behaviors**: 
     *   **Fixed**: NPC stands facing a set direction (snapped or manual).
@@ -62,3 +62,30 @@ If you want to create a custom addon using your own set of skin textures, you ca
 Simply run the script with no arguments:
 ```bash
 python packbuilder.py
+```
+The script will display the title, ask you to input/paste the folder path containing your skin PNGs, and let you type a custom output name.
+
+#### 2. Command Line Mode
+You can specify the skins folder and custom output name as command-line arguments:
+```bash
+python packbuilder.py "C:\Path\To\Skins" --output "MyCustomNpcs"
+```
+
+### Skin File Naming Guide
+*   Ensure all your skins are `.png` images.
+*   Place them inside a dedicated folder.
+*   The script automatically sorts the images alphabetically, indexes them, and maps them to `Skin 1`, `Skin 2`, etc. in the NPC Creator UI.
+
+---
+
+## Technical Details
+
+*   **Scripting Entry**: `scripts/main.js` using `@minecraft/server` and `@minecraft/server-ui`.
+*   **Properties**: Syncs texture indexes through `asteroid:skin_variant` and behavior toggles through `asteroid:look_at_player`.
+*   **Floating Texts**: Relies on dynamic property mappings linked via tag identifiers `npc_id_${npc.id}` on invulnerable custom entities.
+*   **Commands**: Ran asynchronously via `system.runCommandAsync` executing `execute as "PlayerName" at @s run <command>`.
+
+---
+
+## Credits
+*   **Add-on Creator**: Asteroid3946

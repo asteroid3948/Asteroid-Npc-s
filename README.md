@@ -21,6 +21,7 @@ NPC configurations are stored directly on the entity instances using dynamic pro
 * `hologram_l2` (string): Text for the second line of the hologram.
 * `hologram_combined` (boolean): Flag determining if the lines are merged on a single entity using a newline escape (`\n`) or split across two separate entities at stacked offsets.
 * `behavior_type` (integer): `0` for fixed facing angle, `1` for active player tracking.
+* `lock_straight` (boolean): Flag determining if the NPC rotation should snap to the nearest cardinal direction (North, East, South, West).
 * `interact_action` (string): Command line string executed when a player interacts with the NPC.
 * `punch_action` (string): Command line string executed when a player punches the NPC.
 
@@ -32,7 +33,7 @@ The add-on adds three items to the equipment category in a custom creative tab:
 
 * **NPC Creator (asteroid:npc_creator)**: Right-clicking with this item triggers a block raycast up to 10 blocks away. It spawns the NPC centered on the targeted block and opens the configuration GUI.
 * **NPC Editor (asteroid:npc_editor)**: Right-clicking an NPC with this item reads its stored dynamic properties and opens the configuration GUI pre-populated with those values.
-* **Set NPC Rotation (asteroid:npc_rotator)**: Right-clicking an NPC configured in "Fixed" mode with this item calculates the horizontal angle between the NPC and the player, rotating the NPC to face the player's coordinate.
+* **Set NPC Rotation (asteroid:npc_rotator)**: Right-clicking an NPC configured in "Fixed" mode with this item calculates the horizontal angle between the NPC and the player's standing coordinates, rotating the NPC to face the player. If "Lock Facing Straight" is enabled on the NPC, it snaps the rotation to the nearest cardinal direction (North, East, South, West) relative to where the player is standing. Note: when using the rotation wand, you might need to click the NPC a few times for it to fully rotate due to client sync.
 
 ---
 
@@ -49,7 +50,7 @@ When using the Creator or Editor tools, a form will open with the following opti
 * **Look at player**: Activates an interval loop running every 2 ticks (10 times per second) that scans for the closest player within 10 blocks of the NPC and updates the NPC's rotation vector to look at them.
 
 ### Lock Facing Straight
-* **Enabled**: Snaps the NPC's facing direction to the nearest cardinal quadrant (North, East, South, or West) based on the player's look direction when spawned.
+* **Enabled**: Snaps the NPC's facing direction to the nearest cardinal quadrant (North, East, South, or West) based on where the player is standing relative to the NPC.
 
 ### Skin Variant
 * Selects the texture index (1 through 80) to apply to the NPC model.
